@@ -47,12 +47,13 @@
             background-color: red;
         }
     </style>
-</head>
+</head> 
 <body>
     <h2>Welcome, You are logged in!</h2>
     <h3>Add New Account</h3>
     <div class="account-form">
         <input type="text" id="accountType" placeholder="Account Type">
+        <input type="text" id="username" placeholder="Username">
         <input type="email" id="email" placeholder="Email">
         <input type="text" id="phoneNumber" placeholder="Phone Number">
         <input type="password" id="password" placeholder="Password">
@@ -64,6 +65,7 @@
         <thead>
             <tr>
                 <th>Account Type</th>
+                <th>Username</th>
                 <th>Email</th>
                 <th>Phone Number</th>
                 <th>Password</th>
@@ -82,7 +84,8 @@
         }
 
         const accountList = document.getElementById("accountList").getElementsByTagName('tbody')[0];
-        const accountTypeInput = document.getElementById("accountType");
+        const usernameInput = document.getElementById("accountType");
+        const accountTypeInput = document.getElementById("username");
         const emailInput = document.getElementById("email");
         const phoneNumberInput = document.getElementById("phoneNumber");
         const passwordInput = document.getElementById("password");
@@ -97,6 +100,7 @@
                 accountList.innerHTML += `
                     <tr>
                         <td>${account.type}</td>
+                        <td>${account.username}</td>
                         <td>${account.email}</td>
                         <td>${account.phoneNumber}</td>
                         <td>${account.password}</td>
@@ -108,36 +112,38 @@
                 `;
             });
         }
-
         // Menambah atau mengupdate akun
         addAccountBtn.addEventListener("click", () => {
-            const type = accountTypeInput.value.trim();
+            const username = accountTypeInput.value.trim();
+            const type = usernameInput.value.trim();
             const email = emailInput.value.trim() || "N/A";
             const phoneNumber = phoneNumberInput.value.trim() || "N/A";
             const password = passwordInput.value.trim() || "N/A";
 
-            if (type) {
-                accounts.push({ type, email, phoneNumber, password });
+            if (username && type) {
+                accounts.push({ type, username, email, phoneNumber, password });
                 localStorage.setItem("accounts", JSON.stringify(accounts));
                 accountTypeInput.value = "";
+                usernameInput.value = "";
                 emailInput.value = "";
                 phoneNumberInput.value = "";
                 passwordInput.value = "";
                 renderAccounts();
             } else {
-                alert("Account Type is required.");
+                alert("Username and Account Type are required.");
             }
         });
 
         // Edit akun
         window.editAccount = function (index) {
             const account = accounts[index];
+            const newUsername = prompt("Edit Username:", account.username) || account.username;
             const newType = prompt("Edit Account Type:", account.type) || account.type;
             const newEmail = prompt("Edit Email:", account.email) || account.email;
             const newPhoneNumber = prompt("Edit Phone Number:", account.phoneNumber) || account.phoneNumber;
             const newPassword = prompt("Edit Password:", account.password) || account.password;
 
-            accounts[index] = { type: newType, email: newEmail, phoneNumber: newPhoneNumber, password: newPassword };
+            accounts[index] = { username: newUsername, type: newType, email: newEmail, phoneNumber: newPhoneNumber, password: newPassword };
             localStorage.setItem("accounts", JSON.stringify(accounts));
             renderAccounts();
         };
